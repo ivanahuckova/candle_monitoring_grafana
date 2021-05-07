@@ -6,37 +6,28 @@
 #include "WaveshareSharpDustSensor.h"
 #include "config.h"
 
+
+bool openedCandle = true;
+String lokiClient = LOKI_CLIENT;
+int port = 80;
 WaveshareSharpDustSensor dustSensor;
 WiFiUDP ntpUDP;
 NTPClient ntpClient(ntpUDP);
-String lokiClient = String("https://") + LOKI_USER + ":" + LOKI_API_KEY + "@logs-prod-us-central1.grafana.net/loki/api/v1/push";
 WiFiClient wifi;
-HttpClient client = HttpClient(wifi, lokiClient, 443);
+HttpClient client = HttpClient(wifi, lokiClient, port);
 
-void setupWiFi() {
-  Serial.print("Connecting to '");
-  Serial.print(WIFI_SSID);
-  Serial.print("' ...");
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(10000);
-    Serial.print(".");
-  }
-
-  Serial.println("connected");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-  }
-
+char ssid[] = WIFI_SSID;
+char pass[] = WIFI_PASSWORD;
 
 
 void setup(void)
 {
-	pinMode(DUST_SENSOR_LED, OUTPUT);
-	digitalWrite(DUST_SENSOR_LED, LOW);                                     
+  pinMode(DUST_SENSOR_LED, OUTPUT);
+  digitalWrite(DUST_SENSOR_LED, LOW);                                     
   pinMode(FLAME_SENSOR, INPUT);
   pinMode(TOUCH_SENSOR, INPUT);
+  pinMode(MOTOR_A, OUTPUT);
+  pinMode(MOTOR_B, OUTPUT);
 	Serial.begin(9600);  
   while (!Serial) {
 
@@ -85,14 +76,35 @@ void loop(void) {
 
   if (touchValue) {
     Serial.println("Touched");
+    if (openedCandle) {
+       closeCandle();
+    } else {
+      openCandle();
+    }
   } else {
     Serial.println("Not touched");
   }
 
-  // submitToLoki(timestamp, flameValue);
-
+   submitToLoki(timestamp, flameValue);
 	delay(1000);
 }
+
+void setupWiFi() {
+  Serial.print("Connecting to '");
+  Serial.print(WIFI_SSID);
+  Serial.print("' ...");
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(10000);
+    Serial.print(".");
+  }
+
+  Serial.println("connected");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
 
 float getDustValue() {
   digitalWrite(DUST_SENSOR_LED, HIGH);
@@ -108,11 +120,16 @@ float getDustValue() {
 
 void submitToLoki(unsigned long ts, int flameValue)
 {
-  String contentType = "application/json";
   String body = String("{\"streams\": [{ \"stream\": { \"candle_id\": \"1\", \"monitoring_type\": \"candle\"}, \"values\": [ [ \"") + ts + "000000000\", \"" + "flame=" + flameValue + "\" ] ] }]}";
-  client.post("/", contentType, body);
-  Serial.println("ts: ");
-  Serial.println(ts);
+  client.beginRequest();
+  client.post("/loki/api/v1/push");
+  client.sendHeader("Authorization", LOKI_TOKEN);
+  client.sendHeader("Content-Type", "application/json");
+   client.sendHeader("Content-Length", String(body.length()));
+  client.beginBody();
+  client.print(body);
+  client.endRequest();
+
   // read the status code and body of the response
   int statusCode = client.responseStatusCode();
   String response = client.responseBody();
@@ -121,3 +138,22 @@ void submitToLoki(unsigned long ts, int flameValue)
   Serial.print("Response: ");
   Serial.println(response);
 }
+
+void openCandle() {
+  Serial.println("Opening candle");
+  digitalWrite(MOTOR_A, LOW);
+  digitalWrite(MOTOR_B, HIGH); 
+  delay(13500);
+  digitalWrite(MOTOR_B, LOW); 
+  openedCandle = true;
+}
+
+void closeCandle() {
+  Serial.println("Closing candle");
+  digitalWrite(MOTOR_A, HIGH);
+  digitalWrite(MOTOR_B, LOW); 
+  delay(12400);
+  digitalWrite(MOTOR_A, LOW); 
+  openedCandle = false;
+}
+
