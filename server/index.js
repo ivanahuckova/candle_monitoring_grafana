@@ -21,7 +21,7 @@ app.get('/', (_, res) => {
 });
 
 app.get('/toggle', (req, res) => {
-  const canToggle = toggleTimestamp < Date.now() && req.params['secret'] === process.env.SECRET_TOKEN;
+  const canToggle = toggleTimestamp < Date.now() && req.query.secret === process.env.SECRET_TOKEN;
   if (canToggle) {
     toggleTimestamp = Date.now() + 15000;
     candleIsOpen = !candleIsOpen;
