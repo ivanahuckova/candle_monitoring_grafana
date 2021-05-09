@@ -12,12 +12,15 @@ const corsOptions = {
   origin: 'https://ivhuc.grafana.net/',
 };
 
+//Cors & pre-flight
+app.use(cors(corsOptions));
+
 //Routes
 app.get('/', (_, res) => {
   res.send('Welcome to 🕯 monitoring!');
 });
 
-app.get('/toggle', cors(), (req, res) => {
+app.get('/toggle', (req, res) => {
   const canToggle = toggleTimestamp < Date.now();
   const isAuthorized = req.headers['secret-token'] === process.env.SECRET_TOKEN;
   if (isAuthorized && canToggle) {
@@ -29,18 +32,7 @@ app.get('/toggle', cors(), (req, res) => {
   }
 });
 
-app.get('/toggleGrafana', cors(corsOptions), (req, res) => {
-  const canToggle = toggleTimestamp < Date.now();
-  if (canToggle) {
-    toggleTimestamp = Date.now() + 15000;
-    candleIsOpen = !candleIsOpen;
-    res.send(`Toggled state to ${candleIsOpen ? 'opened' : 'closed'}`);
-  } else {
-    res.send(`Can't toggle state`);
-  }
-});
-
-app.get('/status', cors(), (_, res) => {
+app.get('/status', (_, res) => {
   res.send({ candleIsOpen: `${candleIsOpen ? 1 : 0}` });
 });
 
