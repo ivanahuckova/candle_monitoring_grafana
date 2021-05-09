@@ -128,7 +128,7 @@ void closeCandle() {
 }
 
 bool getIsOpen() {
-  candleClient.get("/isopen");
+  candleClient.get("/status");
   String response = candleClient.responseBody();
   if(response.indexOf("1") > 0) {
      Serial.println("candle is open");
