@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const port = process.env.PORT;
 const app = express();
 
@@ -7,6 +8,7 @@ const app = express();
 let candleIsOpen = true;
 let toggleTimestamp = 0;
 
+app.use(cors());
 //Routes
 app.get('/', (_, res) => {
   res.send('Welcome to 🕯 monitoring!');
