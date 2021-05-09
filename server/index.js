@@ -13,7 +13,7 @@ app.use(cors());
 
 //Routes
 app.get('/', (_, res) => {
-  res.send('Welcome to 🕯 monitoring!');
+  res.status(200).send('<h1>Welcome to 🕯 monitoring</h1>');
 });
 
 app.get('/toggle', (req, res) => {
@@ -21,14 +21,14 @@ app.get('/toggle', (req, res) => {
   if (canToggle) {
     toggleTimestamp = Date.now() + 15000;
     candleIsOpen = !candleIsOpen;
-    res.send(`Toggled state to ${candleIsOpen ? 'opened' : 'closed'}`);
+    res.status(200).json({ message: `Toggled state to ${candleIsOpen ? 'opened' : 'closed'}` });
   } else {
-    res.send(`Can't toggle state`);
+    res.status(403).json({ message: `Can't toggle state` });
   }
 });
 
 app.get('/status', (_, res) => {
-  res.send({ candleIsOpen: `${candleIsOpen ? 1 : 0}` });
+  res.status(200).json({ candleIsOpen: `${candleIsOpen ? 1 : 0}` });
 });
 
 app.listen(port, () => {
