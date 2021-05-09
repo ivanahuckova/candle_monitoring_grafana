@@ -20,7 +20,7 @@ char pass[] = WIFI_PASSWORD;
 WaveshareSharpDustSensor dustSensor;
 
 //Previous state of candle
-bool prevCandleIsOpen = true;
+bool prevCandleIsOpen;
 
 //Setup
 void setup(void)
