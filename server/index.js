@@ -10,6 +10,10 @@ let toggleTimestamp = 0;
 
 //Cors & pre-flight
 app.use(cors());
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'https://ivhuc.grafana.net/');
+  res.header('Access-Control-Allow-Credentials', true);
+});
 
 //Routes
 app.get('/', (_, res) => {
@@ -22,8 +26,6 @@ app.get('/toggle', (req, res) => {
   if (isAuthorized && canToggle) {
     toggleTimestamp = Date.now() + 15000;
     candleIsOpen = !candleIsOpen;
-    res.header('Access-Control-Allow-Origin', 'https://ivhuc.grafana.net/');
-    res.header('Access-Control-Allow-Credentials', true);
     res.send(`Toggled state to ${candleIsOpen ? 'opened' : 'closed'}`);
   } else {
     res.send(`Can't toggle state`);
