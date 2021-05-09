@@ -8,12 +8,8 @@ const port = process.env.PORT;
 let candleIsOpen = true;
 let toggleTimestamp = 0;
 
-const corsOptions = {
-  origin: 'https://ivhuc.grafana.net/',
-};
-
 //Cors & pre-flight
-app.use(cors(corsOptions));
+app.use(cors());
 
 //Routes
 app.get('/', (_, res) => {
@@ -22,9 +18,12 @@ app.get('/', (_, res) => {
 
 app.get('/toggle', (req, res) => {
   const canToggle = toggleTimestamp < Date.now();
-  if (canToggle) {
+  const isAuthorized = req.headers['secret-token'] === process.env.SECRET_TOKEN;
+  if (isAuthorized && canToggle) {
     toggleTimestamp = Date.now() + 15000;
     candleIsOpen = !candleIsOpen;
+    res.header('Access-Control-Allow-Origin', 'https://ivhuc.grafana.net/');
+    res.header('Access-Control-Allow-Credentials', true);
     res.send(`Toggled state to ${candleIsOpen ? 'opened' : 'closed'}`);
   } else {
     res.send(`Can't toggle state`);
