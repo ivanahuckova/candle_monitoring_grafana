@@ -1,25 +1,25 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const port = process.env.PORT;
 const app = express();
 
+const port = process.env.PORT;
 //State
 let candleIsOpen = true;
 let toggleTimestamp = 0;
 
-//Corse & pre-flight
+//Cors & pre-flight
 app.use(cors());
-app.options('*', cors());
-//Routes
 
+//Routes
 app.get('/', (_, res) => {
   res.send('Welcome to 🕯 monitoring!');
 });
 
 app.get('/toggle', (req, res) => {
   const canToggle = toggleTimestamp < Date.now();
-  if (canToggle) {
+  const isAuthorized = req.headers['secrete-token'] === process.env.SECRET_TOKEN;
+  if (isAuthorized && canToggle) {
     toggleTimestamp = Date.now() + 15000;
     candleIsOpen = !candleIsOpen;
     res.send(`Toggled state to ${candleIsOpen ? 'opened' : 'closed'}`);
