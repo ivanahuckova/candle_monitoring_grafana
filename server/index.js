@@ -8,12 +8,8 @@ const port = process.env.PORT;
 let candleIsOpen = true;
 let toggleTimestamp = 0;
 
-const corsOptions = {
-  origin: 'https://ivhuc.grafana.net',
-};
-
 //Cors & pre-flight
-app.use(cors(corsOptions));
+app.use(cors());
 
 //Routes
 app.get('/', (_, res) => {
