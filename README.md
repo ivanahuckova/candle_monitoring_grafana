@@ -1,4 +1,4 @@
-# (WIP) Candle monitoring with Grafana stack
+# Candle monitoring with Arduino and Grafana
 
 The candle monitoring system helps you learn more about your candle burning activities and lets you extiguish your candle directly from Grafana. It monitors if candle's flame and released PM particles.
 
@@ -7,13 +7,17 @@ This project was part of **[GrafanaCONline 2021 Easy DIY IoT projects with Grafa
 <img src="imgs/parts1.JPG" width="700" title="Image of how the system looks">
 <img src="imgs/parts2.JPG" width="700" title="Image of how the system looks">
 
+## Arduino & Grafana
+
+To start, review and follow steps in the **[Grafana DIY IoT repo](https://github.com/grafana/diy-iot)**.
+
 ## Hardware
 
 To build this system, you will need:
 
 - **1 [Waveshare Sharp GP2Y1010AU0F](https://www.waveshare.com/dust-sensor.htm)** sensor for PM paricles
 - **1 [Flame sensor](https://www.electronicshub.org/arduino-flame-sensor-interface/)** to detect flame
-- **1 [Arduino Uno WiFi Rev2](https://www.arduino.cc/en/Guide/ArduinoUnoWiFiRev2)** development board
+- **1 [Arduino MKR Wifi 1010](https://store.arduino.cc/arduino-mkr-wifi-1010)** development board
 - **F-F, M-F && M-M Dupont cables**
 - **1 micro USB cable**
 - **1 USB charger**
@@ -25,20 +29,19 @@ Plus:
 
 ## Libraries:
 
-- **WiFiNINA** library by Arduino 
 - **ArduinoHttpClient** by Arduino
-- **NTP Client** by Fabrice Weinberg
-- **Loki** *needs to be added*
-- **Prometheus/Cortex** *needs to be added*
-
 
 ## Circuit & Wiring diagrams
 
 <img src="imgs/wire_diagram.png" width="700" title="Wire diagram">
 
-## Data storage and visualisation
+## Software
 
-We are using free tier of [Grafana Cloud](https://grafana.com/products/cloud/) that comes with hosted [Loki](https://grafana.com/oss/loki/) (logs), [Prometheus](https://grafana.com/oss/prometheus/) (metrics) and [Grafana](https://grafana.com/oss/grafana/) (visualisation). As soon as your account is all set up, you can see the portal with the hosted Grafana, Loki, and Prometheus instances. Created API keys for Loki and Prometheus to publish metrics from the monitoring system to these databases. Update API keys in the config file.
+Download this repo that includes the software for room comfort monitoring. Update **config.h** file with your names, passwords and API keys. Upload software to your board using Arduino IDE.
 
+## Extinguishing candle from Grafana
 
+This repo contains simple server that stores information if the lid that puts of the candle has been closed or open. This can be simply hosted trough [Heroku platform](https://dashboard.heroku.com/) or whatever you prefer. In config.h add the client and secret (if secret is used). 
+
+In Grafana, use the [Button panel](https://grafana.com/grafana/plugins/cloudspout-button-panel/) to send request to open/close the candle monitoring.
 
