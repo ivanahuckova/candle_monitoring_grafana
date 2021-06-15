@@ -1,11 +1,10 @@
 # Candle monitoring with Arduino and Grafana
 
+https://user-images.githubusercontent.com/30407135/122034701-0ecbde00-cdd2-11eb-9d3d-8d2de9340df5.mp4
+
 The candle monitoring system helps you learn more about your candle burning activities and lets you extiguish your candle directly from Grafana. It monitors if candle's flame and released PM particles.
 
 This project was part of **[GrafanaCONline 2021 Easy DIY IoT projects with Grafana](https://grafana.com/go/grafanaconline/2021/diy-iot/)** session.
-
-<img src="imgs/parts1.JPG" width="700" title="Image of how the system looks">
-<img src="imgs/parts2.JPG" width="700" title="Image of how the system looks">
 
 ## Arduino & Grafana
 
@@ -30,6 +29,8 @@ Plus:
 
 - **Box or stand** to put this all together and build the monitoring system
 
+<img src="imgs/parts1.JPG" width="700" title="Image of how the system looks">
+<img src="imgs/parts2.JPG" width="700" title="Image of how the system looks">
 <img src="imgs/developing.JPG" width="700" title="Image of hardware">
 
 ## Libraries:
