@@ -8,7 +8,7 @@
 #define        SYS_VOLTAGE                     3300           
 class WaveshareSharpDustSensor{
 public:
-	WaveshareSharpDustSensor::WaveshareSharpDustSensor();
+	WaveshareSharpDustSensor();
 	float density;
 	float voltage;
 	int Filter(int m);
